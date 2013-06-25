@@ -6,9 +6,11 @@ per item he want to request)
 Passive agent sample
 --------------------
 
-	var server = new PassiveCheckServer(new IPEndPoint(0, 10050));
+```csharp
+var server = new PassiveCheckServer(new IPEndPoint(0, 10050));
 	
-	server.AddItem("test", () => 42);
-	server.AddItem("echo", a => a);
+server.AddItem("test", () => 42);
+server.AddItem("echo", a => a);
 	
-	server.Start();
+server.Start();
+```
