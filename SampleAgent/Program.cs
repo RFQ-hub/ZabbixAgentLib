@@ -35,6 +35,8 @@ namespace SampleAgent
 
             var server = new PassiveCheckServer(new IPEndPoint(0, port));
 
+            server.ClientConnected += (sender, eventArgs) => eventArgs.DenyConnection = true;
+
             server.AddItem("test", () => 42);
             server.AddItem("echo", a => a);
 

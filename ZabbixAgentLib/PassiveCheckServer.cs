@@ -10,6 +10,18 @@ using NLog;
 
 namespace Ids.ZabbixAgent
 {
+    public class ClientConnectedEventArgs : EventArgs
+    {
+        public bool DenyConnection { get; set; }
+
+        public IPAddress RemoteAddress { get; private set; }
+
+        public ClientConnectedEventArgs(IPAddress remoteAddress)
+        {
+            RemoteAddress = remoteAddress;
+        }
+    }
+
     public class PassiveCheckServer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -37,7 +49,7 @@ namespace Ids.ZabbixAgent
         private void BeginAcceptTcpClient()
         {
             Log.Trace("Listening for new connections");
-            server.BeginAcceptTcpClient(ClientConnected, null);
+            server.BeginAcceptTcpClient(ClientConnectedCallback, null);
         }
 
         private static readonly Regex KeyRegex = new Regex(@"^(?<key>[^\[]*)(\[(?<args>.*)\])?",
@@ -60,30 +72,63 @@ namespace Ids.ZabbixAgent
             items.Add(item, args => getItem());
         }
 
-        private void ClientConnected(IAsyncResult ar)
+        public event EventHandler<ClientConnectedEventArgs> ClientConnected;
+
+        private void RaiseClientConnected(IPAddress address, out bool denyConnection)
+        {
+            var deleg = ClientConnected;
+
+            if (deleg != null)
+            {
+                var args = new ClientConnectedEventArgs(address);
+                deleg(this, args);
+                denyConnection = args.DenyConnection;
+            }
+            else
+            {
+                denyConnection = false;
+            }
+        }
+
+        private void ClientConnectedCallback(IAsyncResult ar)
         {
             BeginAcceptTcpClient();
 
             using (var tcpClient = server.EndAcceptTcpClient(ar))
             {
+                var ipEndpoint = (IPEndPoint) tcpClient.Client.RemoteEndPoint;
+                bool denyConnection;
+                RaiseClientConnected(ipEndpoint.Address, out denyConnection);
+                if (denyConnection)
+                {
+                    Log.Trace("Denying connection from {0}", ipEndpoint.Address);
+                    return;
+                }
+
+                Log.Trace("Accepted connection from {0}", ipEndpoint.Address);
                 using (var stream = tcpClient.GetStream())
                 {
-                    string key;
-                    string args;
-                    if (!TryReadKey(stream, out key, out args))
-                    {
-                        return;
-                    }
-
-                    Log.Info("Requested item '{0}' with args '{1}'", key, args);
-
-                    var valueString = GetItemStringValue(key, args);
-
-                    Log.Info("Answering: {0}", valueString);
-
-                    WriteAnswer(stream, valueString);
+                    ReadKeyAndWriteAnswer(stream);
                 }
             }
+        }
+
+        private void ReadKeyAndWriteAnswer(NetworkStream stream)
+        {
+            string key;
+            string args;
+            if (!TryReadKey(stream, out key, out args))
+            {
+                return;
+            }
+
+            Log.Info("Requested item '{0}' with args '{1}'", key, args);
+
+            var valueString = GetItemStringValue(key, args);
+
+            Log.Info("Answering: {0}", valueString);
+
+            WriteAnswer(stream, valueString);
         }
 
         private static void WriteAnswer(Stream stream, string valueString)
