@@ -1,26 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net;
+using Ids.ZabbixAgent;
 using Mono.Options;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace SampleAgent
 {
     class Program
     {
+        private static void InitializeNLog()
+        {
+            var config = new LoggingConfiguration();
+
+            var consoleTarget = new ColoredConsoleTarget();
+            var consoleTargetRule = new LoggingRule("*", LogLevel.Trace, consoleTarget);
+            config.LoggingRules.Add(consoleTargetRule);
+
+            LogManager.Configuration = config;
+            LogManager.ReconfigExistingLoggers();
+        }
+
         static void Main(string[] args)
         {
-            int port = 10051;
-            string activeServer = null;
-            string hostName = "tests";
+            int port = 10050;
             var argumentParser = new OptionSet
             {
-                {"a=|active-server=", v => activeServer = v},
                 {"p=|port=", (int v) => port = v },
-                {"h=|host=", v => hostName =v }
             };
             argumentParser.Parse(args);
 
+            InitializeNLog();
 
+            var server = new PassiveCheckServer(new IPEndPoint(0, port));
+
+            server.AddItem("test", () => 42);
+            server.AddItem("echo", a => a);
+
+            server.Start();
+            Console.ReadLine();
         }
     }
 }
