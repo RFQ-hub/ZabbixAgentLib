@@ -1,0 +1,1 @@
+A .Net library to implement a [Zabbix](http://www.zabbix.com/) agent in your application.
