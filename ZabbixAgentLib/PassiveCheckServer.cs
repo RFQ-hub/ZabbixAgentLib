@@ -10,7 +10,7 @@ using NLog;
 
 namespace Ids.ZabbixAgent
 {
-    public class PassiveCheckServer
+    public class PassiveCheckServer : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -27,15 +27,21 @@ namespace Ids.ZabbixAgent
             server = new TcpListener(endpoint);
         }
 
+        private bool active;
+
         public void Start()
         {
+            if (active) return;
+
             Log.Info("Starting passive server on {0}", server.LocalEndpoint);
             server.Start();
+            active = true;
             BeginAcceptTcpClient();
         }
 
         private void BeginAcceptTcpClient()
         {
+            if (!active) return;
             Log.Trace("Listening for new connections");
             server.BeginAcceptTcpClient(ClientConnectedCallback, null);
         }
@@ -80,24 +86,46 @@ namespace Ids.ZabbixAgent
 
         private void ClientConnectedCallback(IAsyncResult ar)
         {
-            BeginAcceptTcpClient();
-
-            using (var tcpClient = server.EndAcceptTcpClient(ar))
+            try
             {
-                var ipEndpoint = (IPEndPoint) tcpClient.Client.RemoteEndPoint;
-                bool denyConnection;
-                RaiseClientConnected(ipEndpoint.Address, out denyConnection);
-                if (denyConnection)
+                TcpClient tcpClient;
+                try
                 {
-                    Log.Trace("Denying connection from {0}", ipEndpoint.Address);
+                    tcpClient = server.EndAcceptTcpClient(ar);
+                }
+                catch (ObjectDisposedException)
+                {
                     return;
                 }
 
-                Log.Trace("Accepted connection from {0}", ipEndpoint.Address);
-                using (var stream = tcpClient.GetStream())
+                using (tcpClient)
                 {
-                    ReadKeyAndWriteAnswer(stream);
+                    BeginAcceptTcpClient();
+
+                    ClientConnectedCallbackCore(tcpClient);
                 }
+            }
+            catch (Exception exception)
+            {
+                Log.Fatal("Uncatched exception in ClientConnectedCallback", exception);
+            }
+        }
+
+        private void ClientConnectedCallbackCore(TcpClient tcpClient)
+        {
+            var ipEndpoint = (IPEndPoint) tcpClient.Client.RemoteEndPoint;
+            bool denyConnection;
+            RaiseClientConnected(ipEndpoint.Address, out denyConnection);
+            if (denyConnection)
+            {
+                Log.Trace("Denying connection from {0}", ipEndpoint.Address);
+                return;
+            }
+
+            Log.Trace("Accepted connection from {0}", ipEndpoint.Address);
+            using (var stream = tcpClient.GetStream())
+            {
+                ReadKeyAndWriteAnswer(stream);
             }
         }
 
@@ -161,7 +189,17 @@ namespace Ids.ZabbixAgent
             GetItemMethod getItemMethod;
             if (items.TryGetValue(key, out getItemMethod))
             {
-                value = getItemMethod(args);
+                try
+                {
+                    value = getItemMethod(args);
+                }
+                catch (Exception exception)
+                {
+                    var message = string.Format("Unable to get item '{0}' with args '{1}'", items, args);
+                    Log.ErrorException(message, exception);
+
+                    value = NOT_SUPPORTED; // TODO: Find how to specify an error
+                }
             }
             else
             {
@@ -170,6 +208,35 @@ namespace Ids.ZabbixAgent
 
             var valueString = Convert.ToString(value, CultureInfo.InvariantCulture);
             return valueString;
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                try
+                {
+                    Stop();
+                }
+                catch (Exception exception)
+                {
+                    Log.Error("Exception during server stop", exception);
+                }
+            }
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+        }
+
+        public void Stop()
+        {
+            if (active)
+            {
+                server.Stop();
+                active = false;
+            }
         }
     }
 }

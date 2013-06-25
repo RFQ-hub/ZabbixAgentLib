@@ -33,13 +33,14 @@ namespace SampleAgent
 
             InitializeNLog();
 
-            var server = new PassiveCheckServer(new IPEndPoint(0, port));
+            using (var server = new PassiveCheckServer(new IPEndPoint(0, port)))
+            {
+                server.AddItem("test", () => 42);
+                server.AddItem("echo", a => a);
 
-            server.AddItem("test", () => 42);
-            server.AddItem("echo", a => a);
-
-            server.Start();
-            Console.ReadLine();
+                server.Start();
+                Console.ReadLine();
+            }
         }
     }
 }
