@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZabbixAgentLib", "ZabbixAgentLib\ZabbixAgentLib.csproj", "{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
