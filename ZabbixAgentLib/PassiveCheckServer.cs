@@ -198,7 +198,7 @@ namespace Ids.ZabbixAgent
                     var message = string.Format("Unable to get item '{0}' with args '{1}'", items, args);
                     Log.ErrorException(message, exception);
 
-                    value = NOT_SUPPORTED; // TODO: Find how to specify an error
+                    value = NOT_SUPPORTED;
                 }
             }
             else
