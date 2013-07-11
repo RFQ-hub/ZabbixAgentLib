@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
 using NLog;
 
@@ -13,10 +12,6 @@ namespace Ids.ZabbixAgent
     public class PassiveCheckServer : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
-        private const string NOT_SUPPORTED = "ZBX_NOTSUPPORTED";
-        private const string HEADER_STRING = "ZBXD\x01";
-        private static readonly byte[] HeaderBytes = Encoding.ASCII.GetBytes(HEADER_STRING);
 
         private readonly TcpListener server;
 
@@ -144,17 +139,7 @@ namespace Ids.ZabbixAgent
 
             Log.Info("Answering: {0}", valueString);
 
-            WriteAnswer(stream, valueString);
-        }
-
-        private static void WriteAnswer(Stream stream, string valueString)
-        {
-            var valueStringBytes = Encoding.UTF8.GetBytes(valueString);
-
-            stream.Write(HeaderBytes, 0, HeaderBytes.Length);
-            var sizeBytes = BitConverter.GetBytes((long) valueStringBytes.Length);
-            stream.Write(sizeBytes, 0, sizeBytes.Length);
-            stream.Write(valueStringBytes, 0, valueStringBytes.Length);
+            ZabbixProtocol.WriteWithHeader(stream, valueString);
         }
 
         private static bool TryReadKey(Stream stream, out string key, out string args)
@@ -198,12 +183,12 @@ namespace Ids.ZabbixAgent
                     var message = string.Format("Unable to get item '{0}' with args '{1}'", items, args);
                     Log.ErrorException(message, exception);
 
-                    value = NOT_SUPPORTED;
+                    value = ZabbixProtocol.NOT_SUPPORTED;
                 }
             }
             else
             {
-                value = NOT_SUPPORTED;
+                value = ZabbixProtocol.NOT_SUPPORTED;
             }
 
             var valueString = Convert.ToString(value, CultureInfo.InvariantCulture);

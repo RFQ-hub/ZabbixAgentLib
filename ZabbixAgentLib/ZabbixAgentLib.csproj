@@ -38,9 +38,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveCheckClient.cs" />
     <Compile Include="ClientConnectedEventArgs.cs" />
     <Compile Include="PassiveCheckServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZabbixProtocol.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
