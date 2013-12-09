@@ -11,7 +11,7 @@ namespace Ids.ZabbixAgent
 {
     public class PassiveCheckServer : IDisposable
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly TcpListener server;
 
@@ -28,7 +28,7 @@ namespace Ids.ZabbixAgent
         {
             if (active) return;
 
-            Log.Info("Starting passive server on {0}", server.LocalEndpoint);
+            log.Info("Starting passive server on {0}", server.LocalEndpoint);
             server.Start();
             active = true;
             BeginAcceptTcpClient();
@@ -37,11 +37,11 @@ namespace Ids.ZabbixAgent
         private void BeginAcceptTcpClient()
         {
             if (!active) return;
-            Log.Trace("Listening for new connections");
+            log.Trace("Listening for new connections");
             server.BeginAcceptTcpClient(ClientConnectedCallback, null);
         }
 
-        private static readonly Regex KeyRegex = new Regex(@"^(?<key>[^\[]*)(\[(?<args>.*)\])?",
+        private static readonly Regex keyRegex = new Regex(@"^(?<key>[^\[]*)(\[(?<args>.*)\])?",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         private delegate object GetItemMethod(string args);
@@ -102,7 +102,7 @@ namespace Ids.ZabbixAgent
             }
             catch (Exception exception)
             {
-                Log.FatalException("Uncatched exception in ClientConnectedCallback", exception);
+                log.FatalException("Uncatched exception in ClientConnectedCallback", exception);
             }
         }
 
@@ -113,11 +113,11 @@ namespace Ids.ZabbixAgent
             RaiseClientConnected(ipEndpoint.Address, out denyConnection);
             if (denyConnection)
             {
-                Log.Trace("Denying connection from {0}", ipEndpoint.Address);
+                log.Trace("Denying connection from {0}", ipEndpoint.Address);
                 return;
             }
 
-            Log.Trace("Accepted connection from {0}", ipEndpoint.Address);
+            log.Trace("Accepted connection from {0}", ipEndpoint.Address);
             using (var stream = tcpClient.GetStream())
             {
                 ReadKeyAndWriteAnswer(stream);
@@ -133,11 +133,11 @@ namespace Ids.ZabbixAgent
                 return;
             }
 
-            Log.Info("Requested item '{0}' with args '{1}'", key, args);
+            log.Info("Requested item '{0}' with args '{1}'", key, args);
 
             var valueString = GetItemStringValue(key, args);
 
-            Log.Info("Answering: {0}", valueString);
+            log.Info("Answering: {0}", valueString);
 
             ZabbixProtocol.WriteWithHeader(stream, valueString);
         }
@@ -147,7 +147,7 @@ namespace Ids.ZabbixAgent
             var streamReader = new StreamReader(stream);
             string rawKey = streamReader.ReadLine();
 
-            Log.Trace("Received: {0}", rawKey);
+            log.Trace("Received: {0}", rawKey);
 
             if (rawKey == null)
             {
@@ -162,7 +162,7 @@ namespace Ids.ZabbixAgent
 
         private static void ParseZabbixKey(string rawKey, out string key, out string args)
         {
-            var keyMatch = KeyRegex.Match(rawKey);
+            var keyMatch = keyRegex.Match(rawKey);
 
             key = keyMatch.Groups["key"].Value;
             args = keyMatch.Groups["args"].Value;
@@ -181,7 +181,7 @@ namespace Ids.ZabbixAgent
                 catch (Exception exception)
                 {
                     var message = string.Format("Unable to get item '{0}' with args '{1}'", items, args);
-                    Log.ErrorException(message, exception);
+                    log.ErrorException(message, exception);
 
                     value = ZabbixProtocol.NOT_SUPPORTED;
                 }
@@ -205,7 +205,7 @@ namespace Ids.ZabbixAgent
                 }
                 catch (Exception exception)
                 {
-                    Log.ErrorException("Exception during server stop", exception);
+                    log.ErrorException("Exception during server stop", exception);
                 }
             }
         }
