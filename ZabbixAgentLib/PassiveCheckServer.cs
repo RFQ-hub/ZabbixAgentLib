@@ -102,7 +102,7 @@ namespace Ids.ZabbixAgent
             }
             catch (Exception exception)
             {
-                Log.Fatal("Uncatched exception in ClientConnectedCallback", exception);
+                Log.FatalException("Uncatched exception in ClientConnectedCallback", exception);
             }
         }
 
@@ -205,7 +205,7 @@ namespace Ids.ZabbixAgent
                 }
                 catch (Exception exception)
                 {
-                    Log.Error("Exception during server stop", exception);
+                    Log.ErrorException("Exception during server stop", exception);
                 }
             }
         }
