@@ -39,7 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveCheckClient.cs" />
-    <Compile Include="ActiveCheckInfo.cs" />
     <Compile Include="ClientConnectedEventArgs.cs" />
     <Compile Include="PassiveCheckServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
