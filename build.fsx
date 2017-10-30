@@ -6,8 +6,16 @@ open Fake
 let configuration = environVarOrDefault "Configuration" (if buildServer = LocalBuild then "Debug" else "Release")
 let solution = "ZabbixAgent.sln"
 
+let buildNumber =
+    [
+        TeamCityHelper.TeamCityBuildParameters.tryGet "build.counter"
+        environVarOrNone "APPVEYOR_BUILD_NUMBER"
+        Some "0"
+    ]
+    |> List.choose id |> List.tryHead
+
 let dotNetAdditionalArgs =
-    match TeamCityHelper.TeamCityBuildParameters.tryGet "build.counter" with
+    match buildNumber with
     | Some buildNumber -> [ sprintf "/p:BuildNumber=%s" buildNumber ]
     | _ -> []
 
@@ -29,9 +37,9 @@ Target "pack" <| fun _ ->
             AdditionalArgs = dotNetAdditionalArgs
         })
 
+Target "ci" <| fun _ ->
     !! ("src\\**\\*.nupkg") |> Seq.iter TeamCityHelper.PublishArtifact
-
-Target "ci" DoNothing
+    !! ("src\\**\\*.nupkg") |> AppVeyor.PushArtifacts
 
 "build" ==> "pack"
 "pack" ==> "ci"

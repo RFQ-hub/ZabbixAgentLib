@@ -1,0 +1,12 @@
+branches:
+  only:
+    - master
+image:
+  - Visual Studio 2017
+version: '{build}'
+cache:
+  - "%LocalAppData%\\NuGet\\Cache -> paket.lock"
+  - "paket-files -> paket.lock"
+build_script:
+  - ps: .\build.cmd CI
+test: off
