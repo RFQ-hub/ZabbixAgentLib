@@ -4,12 +4,13 @@
 open Fake
 
 let configuration = environVarOrDefault "Configuration" (if buildServer = LocalBuild then "Debug" else "Release")
+let solution = "ZabbixAgentLib.sln"
 
 Target "build" <| fun _ ->
-    DotNetCli.Build (fun p -> { p with WorkingDir = "src"; Configuration = configuration } )
+    DotNetCli.Build (fun p -> { p with WorkingDir = "src"; Configuration = configuration; Project = solution })
 
 Target "pack" <| fun _ ->
-    DotNetCli.Pack (fun p -> { p with WorkingDir = "src"; Configuration = configuration } )
+    DotNetCli.Pack (fun p -> { p with WorkingDir = "src"; Configuration = configuration; Project = solution })
 
     !! ("src\\**\\*.nupkg") |> Seq.iter TeamCityHelper.PublishArtifact
 
