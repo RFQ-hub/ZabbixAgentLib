@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using NLog;
 
-namespace Ids.ZabbixAgent
+namespace Itg.ZabbixAgentLib
 {
     public class PassiveCheckServer : IDisposable
     {
@@ -109,8 +109,7 @@ namespace Ids.ZabbixAgent
         private void ClientConnectedCallbackCore(TcpClient tcpClient)
         {
             var ipEndpoint = (IPEndPoint) tcpClient.Client.RemoteEndPoint;
-            bool denyConnection;
-            RaiseClientConnected(ipEndpoint.Address, out denyConnection);
+            RaiseClientConnected(ipEndpoint.Address, out var denyConnection);
             if (denyConnection)
             {
                 log.Trace("Denying connection from {0}", ipEndpoint.Address);
@@ -126,9 +125,7 @@ namespace Ids.ZabbixAgent
 
         private void ReadKeyAndWriteAnswer(NetworkStream stream)
         {
-            string key;
-            string args;
-            if (!TryReadKey(stream, out key, out args))
+            if (!TryReadKey(stream, out var key, out var args))
             {
                 return;
             }
@@ -171,8 +168,7 @@ namespace Ids.ZabbixAgent
         private string GetItemStringValue(string key, string args)
         {
             object value;
-            GetItemMethod getItemMethod;
-            if (items.TryGetValue(key, out getItemMethod))
+            if (items.TryGetValue(key, out var getItemMethod))
             {
                 try
                 {

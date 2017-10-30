@@ -2,9 +2,10 @@
 using System.Net;
 using NLog;
 
-namespace Ids.ZabbixAgent
+namespace Itg.ZabbixAgentLib
 {
-    public class ActiveCheckClient : IDisposable
+    // TODO
+    internal class ActiveCheckClient : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 

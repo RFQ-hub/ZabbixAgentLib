@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Net;
 
-namespace Ids.ZabbixAgent
+namespace Itg.ZabbixAgentLib
 {
     public class ClientConnectedEventArgs : EventArgs
     {
         public bool DenyConnection { get; set; }
 
-        public IPAddress RemoteAddress { get; private set; }
+        public IPAddress RemoteAddress { get; }
 
         public ClientConnectedEventArgs(IPAddress remoteAddress)
         {

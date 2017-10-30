@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Net;
-using Ids.ZabbixAgent;
 using Mono.Options;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace SampleAgent
+namespace Itg.ZabbixAgentLib.SampleAgent
 {
     class Program
     {
