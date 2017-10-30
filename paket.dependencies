@@ -1,0 +1,13 @@
+version 5.120.0
+
+source https://www.nuget.org/api/v2
+storage:none
+
+nuget NLog 2.0.1.2
+nuget Mono.Options 5.3.0.1
+
+group build
+    source https://www.nuget.org/api/v2
+    framework >= net40
+
+    nuget Fake
