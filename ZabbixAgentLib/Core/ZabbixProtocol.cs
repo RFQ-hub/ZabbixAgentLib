@@ -2,17 +2,12 @@
 using System.IO;
 using System.Text;
 
-namespace Itg.ZabbixAgentLib
+namespace Itg.ZabbixAgentLib.Core
 {
-    internal class ZabbixConstants
-    {
-        public const string NotSupported = "ZBX_NOTSUPPORTED";
-        public const string HeaderString = "ZBXD\x01";
-        public static readonly byte[] HeaderBytes = Encoding.ASCII.GetBytes(HeaderString);
-    }
-
     internal class ZabbixProtocol
     {
+        private static readonly byte[] headerBytes = Encoding.ASCII.GetBytes(ZabbixConstants.HeaderString);
+
         /// <summary>
         /// Write a string to the stream prefixed with it's size and the Zabbix protocol header.
         /// </summary>
@@ -30,7 +25,7 @@ namespace Itg.ZabbixAgentLib
 
             var valueStringBytes = Encoding.UTF8.GetBytes(valueString);
 
-            stream.Write(ZabbixConstants.HeaderBytes, 0, ZabbixConstants.HeaderBytes.Length);
+            stream.Write(headerBytes, 0, headerBytes.Length);
             var sizeBytes = BitConverter.GetBytes((long)valueStringBytes.Length);
             stream.Write(sizeBytes, 0, sizeBytes.Length);
             stream.Write(valueStringBytes, 0, valueStringBytes.Length);
