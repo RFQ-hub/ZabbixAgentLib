@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <Version>1.0.0.0</Version>
+    <BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
+    <Version>1.0.$(BuildNumber)</Version>
     <Authors>ITG</Authors>
     <Company>ITG</Company>
     <Product>ZabbixAgentLib</Product>
