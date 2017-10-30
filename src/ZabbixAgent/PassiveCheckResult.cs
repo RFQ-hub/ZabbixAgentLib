@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Itg.ZabbixAgentLib
+namespace Itg.ZabbixAgent
 {
     public struct PassiveCheckResult
     {

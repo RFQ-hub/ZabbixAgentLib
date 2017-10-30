@@ -2,7 +2,7 @@
 using System.Net;
 using NLog;
 
-namespace Itg.ZabbixAgentLib
+namespace Itg.ZabbixAgent
 {
     // TODO
     internal class ActiveCheckClient : IDisposable

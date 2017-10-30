@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Itg.ZabbixAgentLib
+namespace Itg.ZabbixAgent
 {
     public class ClientConnectedEventArgs : EventArgs
     {

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Net;
 using NLog;
 
-namespace Itg.ZabbixAgentLib
+namespace Itg.ZabbixAgent
 {
     public class PassiveCheckServer : PassiveCheckServerBase
     {

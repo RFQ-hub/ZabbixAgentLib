@@ -2,10 +2,10 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Itg.ZabbixAgentLib.Core;
+using Itg.ZabbixAgent.Core;
 using NLog;
 
-namespace Itg.ZabbixAgentLib
+namespace Itg.ZabbixAgent
 {
     public abstract class PassiveCheckServerBase : IDisposable
     {

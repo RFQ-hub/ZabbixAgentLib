@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Itg.ZabbixAgentLib.Core
+namespace Itg.ZabbixAgent.Core
 {
     internal class ZabbixProtocol
     {

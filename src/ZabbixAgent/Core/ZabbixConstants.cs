@@ -1,4 +1,4 @@
-namespace Itg.ZabbixAgentLib.Core
+namespace Itg.ZabbixAgent.Core
 {
     internal class ZabbixConstants
     {

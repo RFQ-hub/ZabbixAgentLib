@@ -2,9 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
-    <PackageId>Itg.ZabbixAgentLib</PackageId>
-    <RootNamespace>Itg.ZabbixAgentLib</RootNamespace>
-    <AssemblyName>Itg.ZabbixAgentLib</AssemblyName>
+    <PackageId>Itg.ZabbixAgent</PackageId>
+    <RootNamespace>Itg.ZabbixAgent</RootNamespace>
+    <AssemblyName>Itg.ZabbixAgent</AssemblyName>
   </PropertyGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

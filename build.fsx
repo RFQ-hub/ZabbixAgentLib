@@ -4,7 +4,7 @@
 open Fake
 
 let configuration = environVarOrDefault "Configuration" (if buildServer = LocalBuild then "Debug" else "Release")
-let solution = "ZabbixAgentLib.sln"
+let solution = "ZabbixAgent.sln"
 
 let dotNetAdditionalArgs =
     match TeamCityHelper.TeamCityBuildParameters.tryGet "build.counter" with

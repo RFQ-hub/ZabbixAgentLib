@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace Itg.ZabbixAgentLib.Core
+namespace Itg.ZabbixAgent.Core
 {
     /// <summary>
     /// Parse the "key[args]" syntax used by zabbix.

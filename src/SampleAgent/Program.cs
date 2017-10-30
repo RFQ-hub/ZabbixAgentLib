@@ -5,7 +5,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace Itg.ZabbixAgentLib.SampleAgent
+namespace Itg.ZabbixAgent.SampleAgent
 {
     class Program
     {
