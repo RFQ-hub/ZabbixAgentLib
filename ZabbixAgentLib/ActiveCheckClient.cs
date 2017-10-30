@@ -7,7 +7,7 @@ namespace Itg.ZabbixAgentLib
     // TODO
     internal class ActiveCheckClient : IDisposable
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         public ActiveCheckClient(IPEndPoint endpoint)
         {
@@ -29,7 +29,7 @@ namespace Itg.ZabbixAgentLib
                 }
                 catch (Exception exception)
                 {
-                    Log.Error("Exception during server stop", exception);
+                    log.Error("Exception during server stop", exception);
                 }
             }
         }

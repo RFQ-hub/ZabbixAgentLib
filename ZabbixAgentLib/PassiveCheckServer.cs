@@ -17,7 +17,10 @@ namespace Itg.ZabbixAgentLib
 
         public PassiveCheckServer(IPEndPoint endpoint)
         {
-            if (endpoint == null) throw new ArgumentNullException("endpoint");
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException("endpoint");
+            }
 
             server = new TcpListener(endpoint);
         }
@@ -26,7 +29,10 @@ namespace Itg.ZabbixAgentLib
 
         public void Start()
         {
-            if (active) return;
+            if (active)
+            {
+                return;
+            }
 
             log.Info("Starting passive server on {0}", server.LocalEndpoint);
             server.Start();
@@ -36,7 +42,11 @@ namespace Itg.ZabbixAgentLib
 
         private void BeginAcceptTcpClient()
         {
-            if (!active) return;
+            if (!active)
+            {
+                return;
+            }
+
             log.Trace("Listening for new connections");
             server.BeginAcceptTcpClient(ClientConnectedCallback, null);
         }
@@ -142,7 +152,7 @@ namespace Itg.ZabbixAgentLib
         private static bool TryReadKey(Stream stream, out string key, out string args)
         {
             var streamReader = new StreamReader(stream);
-            string rawKey = streamReader.ReadLine();
+            var rawKey = streamReader.ReadLine();
 
             log.Trace("Received: {0}", rawKey);
 
@@ -179,12 +189,12 @@ namespace Itg.ZabbixAgentLib
                     var message = string.Format("Unable to get item '{0}' with args '{1}'", items, args);
                     log.ErrorException(message, exception);
 
-                    value = ZabbixProtocol.NOT_SUPPORTED;
+                    value = ZabbixConstants.NotSupported;
                 }
             }
             else
             {
-                value = ZabbixProtocol.NOT_SUPPORTED;
+                value = ZabbixConstants.NotSupported;
             }
 
             var valueString = Convert.ToString(value, CultureInfo.InvariantCulture);
@@ -193,16 +203,18 @@ namespace Itg.ZabbixAgentLib
 
         protected void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing)
             {
-                try
-                {
-                    Stop();
-                }
-                catch (Exception exception)
-                {
-                    log.ErrorException("Exception during server stop", exception);
-                }
+                return;
+            }
+
+            try
+            {
+                Stop();
+            }
+            catch (Exception exception)
+            {
+                log.ErrorException("Exception during server stop", exception);
             }
         }
 
