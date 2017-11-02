@@ -6,8 +6,6 @@ image:
 version: '{build}'
 cache:
   - "%LocalAppData%\\NuGet\\Cache -> paket.lock"
-  - "paket-files -> paket.lock"
 build_script:
-  - dir
   - .\build.cmd CI
 test: off
