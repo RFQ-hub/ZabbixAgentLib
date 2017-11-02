@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using JetBrains.Annotations;
 
 namespace Itg.ZabbixAgent
 {
@@ -43,7 +44,7 @@ namespace Itg.ZabbixAgent
 
         private readonly ConcurrentDictionary<CounterId, string> store = new ConcurrentDictionary<CounterId, string>();
 
-        public PassiveCheckServerWithStore(IPEndPoint endpoint)
+        public PassiveCheckServerWithStore([NotNull] IPEndPoint endpoint)
             : base(endpoint)
         {
         }
@@ -58,10 +59,10 @@ namespace Itg.ZabbixAgent
             return PassiveCheckResult.NotSupported;
         }
 
-        public void SetValue<T>(string key, string arguments, T value)
+        public void SetValue<T>([NotNull] string key, [CanBeNull] string arguments, [CanBeNull] T value)
         {
             var counterId = new CounterId(key, arguments);
-            if (value == null)
+            if (ReferenceEquals(value, null))
             {
                 store.TryRemove(counterId, out _);
             }

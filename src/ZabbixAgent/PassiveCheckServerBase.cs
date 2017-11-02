@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using Itg.ZabbixAgent.Core;
+using JetBrains.Annotations;
 using NLog;
 
 namespace Itg.ZabbixAgent
@@ -13,7 +14,7 @@ namespace Itg.ZabbixAgent
 
         private readonly TcpListener server;
 
-        protected PassiveCheckServerBase(IPEndPoint endpoint)
+        protected PassiveCheckServerBase([NotNull] IPEndPoint endpoint)
         {
             if (endpoint == null)
             {
@@ -51,7 +52,7 @@ namespace Itg.ZabbixAgent
 
         public event EventHandler<ClientConnectedEventArgs> ClientConnected;
 
-        private void RaiseClientConnected(IPAddress address, out bool denyConnection)
+        private void RaiseClientConnected([NotNull] IPAddress address, out bool denyConnection)
         {
             var deleg = ClientConnected;
 
@@ -67,7 +68,7 @@ namespace Itg.ZabbixAgent
             }
         }
 
-        private void OnClientConnected(IAsyncResult asyncResult)
+        private void OnClientConnected([NotNull] IAsyncResult asyncResult)
         {
             try
             {
@@ -97,7 +98,7 @@ namespace Itg.ZabbixAgent
             }
         }
 
-        private void HandleClient(TcpClient tcpClient)
+        private void HandleClient([NotNull] TcpClient tcpClient)
         {
             var ipEndpoint = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
             RaiseClientConnected(ipEndpoint.Address, out var denyConnection);
@@ -114,7 +115,7 @@ namespace Itg.ZabbixAgent
             }
         }
 
-        private void ReadKeyAndWriteAnswer(NetworkStream stream)
+        private void ReadKeyAndWriteAnswer([NotNull] NetworkStream stream)
         {
             var streamReader = new StreamReader(stream);
             var key = streamReader.ReadLine();
@@ -127,9 +128,9 @@ namespace Itg.ZabbixAgent
             ZabbixProtocol.WriteWithHeader(stream, valueString);
         }
 
-        protected abstract PassiveCheckResult GetValue(string key, string args);
+        protected abstract PassiveCheckResult GetValue([NotNull] string key, [CanBeNull] string args);
 
-        private string GetItemStringValue(string key)
+        private string GetItemStringValue([NotNull] string key)
         {
             PassiveCheckResult value;
 

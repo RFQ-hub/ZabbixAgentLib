@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using JetBrains.Annotations;
 
 namespace Itg.ZabbixAgent
 {
@@ -7,9 +8,10 @@ namespace Itg.ZabbixAgent
     {
         public bool DenyConnection { get; set; }
 
+        [NotNull]
         public IPAddress RemoteAddress { get; }
 
-        public ClientConnectedEventArgs(IPAddress remoteAddress)
+        public ClientConnectedEventArgs([NotNull] IPAddress remoteAddress)
         {
             RemoteAddress = remoteAddress;
         }

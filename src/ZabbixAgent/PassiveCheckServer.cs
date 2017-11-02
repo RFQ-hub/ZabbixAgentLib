@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using JetBrains.Annotations;
 using NLog;
 
 namespace Itg.ZabbixAgent
@@ -10,24 +11,44 @@ namespace Itg.ZabbixAgent
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public PassiveCheckServer(IPEndPoint endpoint) : base(endpoint)
+        public PassiveCheckServer([NotNull] IPEndPoint endpoint) : base(endpoint)
         {
         }
 
         private delegate object GetItemMethod(string args);
 
-        public delegate T TypedGetItemMethodWithArgs<out T>(string args);
+        public delegate T TypedGetItemMethodWithArgs<out T>([CanBeNull] string args);
         public delegate T TypedGetItemMethod<out T>();
 
         private readonly Dictionary<string, GetItemMethod> items = new Dictionary<string, GetItemMethod>();
 
-        public void AddItem<T>(string item, TypedGetItemMethodWithArgs<T> getItem)
+        public void AddItem<T>([NotNull] string item, [NotNull] TypedGetItemMethodWithArgs<T> getItem)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
+            if (getItem == null)
+            {
+                throw new ArgumentNullException(nameof(getItem));
+            }
+
             items.Add(item, args => getItem(args));
         }
 
         public void AddItem<T>(string item, TypedGetItemMethod<T> getItem)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
+            if (getItem == null)
+            {
+                throw new ArgumentNullException(nameof(getItem));
+            }
+
             items.Add(item, args => getItem());
         }
 
