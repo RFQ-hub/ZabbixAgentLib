@@ -12,7 +12,7 @@ namespace Itg.ZabbixAgent
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly TcpListener server;
+        private readonly TcpListener tcpListener;
 
         protected PassiveCheckServerBase([NotNull] IPEndPoint endpoint)
         {
@@ -21,33 +21,33 @@ namespace Itg.ZabbixAgent
                 throw new ArgumentNullException("endpoint");
             }
 
-            server = new TcpListener(endpoint);
+            tcpListener = new TcpListener(endpoint);
         }
 
-        private bool active;
+        public bool IsStarted { get; private set; }
 
         public void Start()
         {
-            if (active)
+            if (IsStarted)
             {
                 return;
             }
 
-            log.Info("Starting passive server on {0}", server.LocalEndpoint);
-            server.Start();
-            active = true;
+            log.Info("Starting passive server on {0}", tcpListener.LocalEndpoint);
+            tcpListener.Start();
+            IsStarted = true;
             BeginAcceptTcpClient();
         }
 
         private void BeginAcceptTcpClient()
         {
-            if (!active)
+            if (!IsStarted)
             {
                 return;
             }
 
             log.Trace("Listening for new connections");
-            server.BeginAcceptTcpClient(OnClientConnected, null);
+            tcpListener.BeginAcceptTcpClient(OnClientConnected, null);
         }
 
         public event EventHandler<ClientConnectedEventArgs> ClientConnected;
@@ -76,7 +76,7 @@ namespace Itg.ZabbixAgent
                 TcpClient tcpClient;
                 try
                 {
-                    tcpClient = server.EndAcceptTcpClient(asyncResult);
+                    tcpClient = tcpListener.EndAcceptTcpClient(asyncResult);
                 }
                 catch (ObjectDisposedException)
                 {
@@ -175,10 +175,10 @@ namespace Itg.ZabbixAgent
 
         public void Stop()
         {
-            if (active)
+            if (IsStarted)
             {
-                server.Stop();
-                active = false;
+                tcpListener.Stop();
+                IsStarted = false;
             }
         }
     }
