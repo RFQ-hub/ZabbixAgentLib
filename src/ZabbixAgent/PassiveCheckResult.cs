@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Itg.ZabbixAgent
 {
@@ -9,7 +10,7 @@ namespace Itg.ZabbixAgent
 
         public static PassiveCheckResult NotSupported { get; } = default;
 
-        public PassiveCheckResult(string value)
+        public PassiveCheckResult([NotNull] string value)
         {
             Value = value ?? throw new ArgumentNullException(nameof(value));
         }
