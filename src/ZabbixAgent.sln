@@ -1,15 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZabbixAgentLib", "ZabbixAgent\ZabbixAgent.csproj", "{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZabbixAgent", "ZabbixAgent\ZabbixAgent.csproj", "{BB73DF3C-CEAC-4CAE-9DC7-01B3920B8F7C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAgent", "SampleAgent\SampleAgent.csproj", "{2E91265A-D6B9-4F8E-97D0-27B0E5946980}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ECBB8A17-2189-4C16-B5D8-F63459A9433D}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\build.fsx = ..\build.fsx
 		Directory.Build.props = Directory.Build.props
 		LICENSE.md = LICENSE.md
 		README.md = README.md
