@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Itg.ZabbixAgent.ValueProviders;
 using Mono.Options;
 using NLog;
 using NLog.Config;
@@ -7,7 +8,7 @@ using NLog.Targets;
 
 namespace Itg.ZabbixAgent.SampleAgent
 {
-    class Program
+    internal class Program
     {
         private static void InitializeNLog()
         {
@@ -21,22 +22,25 @@ namespace Itg.ZabbixAgent.SampleAgent
             LogManager.ReconfigExistingLoggers();
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            int port = 10050;
+            var port = 10050;
             var argumentParser = new OptionSet
             {
-                {"p=|port=", (int v) => port = v },
+                {"p=|port=", (int v) => port = v }
             };
             argumentParser.Parse(args);
 
             InitializeNLog();
 
-            using (var server = new PassiveCheckServer(new IPEndPoint(0, port)))
-            {
-                server.AddItem("test", () => 42);
-                server.AddItem("echo", a => a);
+            var storedValueProvider = new StoredValueProvider();
+            storedValueProvider.SetValue("test", 42);
 
+            var delegateValueProvider = new DelegateValueProvider();
+            delegateValueProvider.AddItem("echo", a => a);
+
+            using (var server = new PassiveCheckServer(new IPEndPoint(0, port), storedValueProvider, delegateValueProvider))
+            {
                 server.Start();
                 Console.ReadLine();
             }
