@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>Itg.ZabbixAgent.Tests</RootNamespace>
+    <AssemblyName>Itg.ZabbixAgent.Tests</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\ZabbixAgent\ZabbixAgent.csproj" />
+  </ItemGroup>
+</Project>

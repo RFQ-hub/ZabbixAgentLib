@@ -5,9 +5,13 @@ storage:none
 
 nuget NLog 2.0.1.2
 nuget Mono.Options 5.3.0.1
+nuget xunit ~> 2.3
+clitool dotnet-xunit ~> 2.3
+nuget NFluent
 
 group build
     source https://www.nuget.org/api/v2
     framework >= net40
 
     nuget Fake
+    nuget xunit.runner.console ~> 2.3

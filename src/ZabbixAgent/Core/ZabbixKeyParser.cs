@@ -9,7 +9,7 @@ namespace Itg.ZabbixAgent.Core
     /// </summary>
     internal static class ZabbixKeyParser
     {
-        private static readonly Regex keyRegex = new Regex(@"^(?<key>[^\[]*)(\[(?<args>.*)\])?",
+        private static readonly Regex keyRegex = new Regex(@"^(?<key>[^\[]*)(\[(?<args>.*)\])?$",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         public static void Parse([NotNull] string rawKey, [NotNull] out string key, [CanBeNull] out string args)
