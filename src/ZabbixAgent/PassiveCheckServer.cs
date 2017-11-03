@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using Itg.ZabbixAgent.Core;
 using JetBrains.Annotations;
 using NLog;
 
@@ -22,7 +23,7 @@ namespace Itg.ZabbixAgent
 
         private readonly Dictionary<string, GetItemMethod> items = new Dictionary<string, GetItemMethod>();
 
-        public void AddItem<T>([NotNull] string item, [NotNull] TypedGetItemMethodWithArgs<T> getItem)
+        public IDisposable AddItem<T>([NotNull] string item, [NotNull] TypedGetItemMethodWithArgs<T> getItem)
         {
             if (item == null)
             {
@@ -35,9 +36,10 @@ namespace Itg.ZabbixAgent
             }
 
             items.Add(item, args => getItem(args));
+            return new Disposable(() => items.Remove(item));
         }
 
-        public void AddItem<T>(string item, TypedGetItemMethod<T> getItem)
+        public IDisposable AddItem<T>(string item, TypedGetItemMethod<T> getItem)
         {
             if (item == null)
             {
@@ -50,6 +52,7 @@ namespace Itg.ZabbixAgent
             }
 
             items.Add(item, args => getItem());
+            return new Disposable(() => items.Remove(item));
         }
 
         protected override PassiveCheckResult GetValue(string key, string args)
