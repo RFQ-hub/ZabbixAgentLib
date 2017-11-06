@@ -2,7 +2,7 @@
 using NFluent;
 using Xunit;
 
-namespace Itg.ZabbixAgent.Tests
+namespace Itg.ZabbixAgent.Tests.Core
 {
     public class ZabbixKeyParserTests
     {
