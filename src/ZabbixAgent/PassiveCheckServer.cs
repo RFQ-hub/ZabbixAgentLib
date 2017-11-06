@@ -160,7 +160,7 @@ namespace Itg.ZabbixAgent
 
                 var valueString = GetItemStringValue(key);
 
-                log.Info("Answering: {0}", valueString);
+                log.Trace("Answering: {0}", valueString);
 
                 ZabbixProtocol.WriteWithHeader(stream, valueString, null);
             }
@@ -217,7 +217,10 @@ namespace Itg.ZabbixAgent
         {
             if (IsStarted)
             {
+                log.Debug("Stopping server on {0}", tcpListener.LocalEndpoint);
                 tcpListener.Stop();
+
+                log.Info("Stopped server on {0}", tcpListener.LocalEndpoint);
                 IsStarted = false;
             }
         }
