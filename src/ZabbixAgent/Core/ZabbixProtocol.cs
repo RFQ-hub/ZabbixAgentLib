@@ -10,7 +10,7 @@ namespace Itg.ZabbixAgent.Core
     {
         private static readonly byte[] headerBytes = Encoding.ASCII.GetBytes(ZabbixConstants.HeaderString);
 
-        private static readonly byte[] zero = new byte[ 0 ];
+        private static readonly byte[] zero = { 0 };
 
         /// <summary>
         /// Write a string to the stream prefixed with it's size and the Zabbix protocol header.
